@@ -1,0 +1,9 @@
+services:
+  app:
+    restart: always
+    build: .
+    ports:
+      - '4444:4444'
+    env_file: .env
+    volumes:
+      - ./src:/app/src

@@ -1,0 +1,11 @@
+{
+    "extends": "@ymeskini/tsconfig",
+    "compilerOptions": {
+      "module": "Node16",
+      "moduleResolution": "Node16",
+      "isolatedModules": true,
+      "noEmit": true
+    },
+    "include": ["./src"],
+    "exclude": ["node_modules", "dist"]
+}
