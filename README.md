@@ -9,6 +9,8 @@ docker-compose up --build
 The app will be available at `http://localhost:4444`.
 To change the port you'll need to update the `docker-compose.yml` file and the `Dockerfile` to match the new port defined in the `.env` file.
 
+NB. SWC is not doing typechecking so you'll need to run `npm run type:watch` in a separate terminal to get typechecking.
+
 # Installing new packages
 When you install a new package you'll need to rebuild the image by stopping the container.
 
@@ -28,4 +30,3 @@ Typecheck with TypeScript
 npm run type
 ```
 
-For production you'll need a Sentry DSN.

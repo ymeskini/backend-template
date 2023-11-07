@@ -3,7 +3,7 @@ FROM node:20-alpine
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY package.json package-lock.json .swcrc tsconfig.json /app/
+COPY package.json package-lock.json .swcrc /app/
 COPY src /app/src
 
 RUN npm ci && npm cache clean --force

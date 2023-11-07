@@ -20,32 +20,36 @@ export const makeTypeSafeHandler = <
     req: Request<TParams, TResponse, TBody, TQuery>,
     res: Response<TResponse>,
     next: NextFunction,
-  ) => Promise<void>,
+  ) => any,
 ): RequestHandler<TParams, TResponse, TBody, TQuery> => {
   return (req, res, next) => {
     const { query, body, params } = req;
+    const sendBadRequest = () => res.sendStatus(400);
+
     if (config.query) {
       try {
         config.query.parse(query);
       } catch (e) {
-        return res.sendStatus(400);
+        return sendBadRequest();
       }
     }
     if (config.body) {
       try {
         config.body.parse(body);
       } catch (e) {
-        return res.sendStatus(400);
+        return sendBadRequest();
       }
     }
     if (config.params) {
       try {
         config.params.parse(params);
       } catch (e) {
-        return res.sendStatus(400);
+        return sendBadRequest();
       }
     }
 
-    return catchAsync(handler(req, res, next) as any);
+    return catchAsync<TParams, TResponse, TBody, TQuery>(
+      handler(req, res, next),
+    );
   };
 };

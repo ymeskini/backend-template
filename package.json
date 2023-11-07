@@ -14,11 +14,12 @@
   },
   "scripts": {
     "build": "swc src -D -d dist",
-    "dev": "npm run build -- -w & node --watch-path=./dist dist/index.js & tsc --watch",
+    "dev": "npm run build -- -w & node --watch-path=./dist dist/index.js",
     "start": "node dist/index.js",
     "lint": "eslint src",
     "test": "jest",
-    "type": "tsc --noEmit"
+    "type": "tsc --noEmit",
+    "type:watch": "tsc --watch"
   },
   "author": "Youssef Meskini",
   "license": "ISC",
