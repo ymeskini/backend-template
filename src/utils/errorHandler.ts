@@ -36,7 +36,6 @@ export const globalErrorHandler =
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (err, _, res, _next) => {
     err.statusCode = err.statusCode || 500;
-
     if (__DEV__) {
       sendErrorDev(err, res);
     } else {

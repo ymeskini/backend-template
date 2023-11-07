@@ -1,6 +1,8 @@
-import { RequestHandler } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { z } from 'zod';
 import { ParsedQs } from 'qs';
+
+import { catchAsync } from './catchAsync';
 
 export const makeTypeSafeHandler = <
   TQuery extends ParsedQs = any,
@@ -14,7 +16,11 @@ export const makeTypeSafeHandler = <
     params?: z.Schema<TParams>;
     response?: z.Schema<TResponse>;
   },
-  handler: RequestHandler<TParams, TResponse, TBody, TQuery>,
+  handler: (
+    req: Request<TParams, TResponse, TBody, TQuery>,
+    res: Response<TResponse>,
+    next: NextFunction,
+  ) => Promise<void>,
 ): RequestHandler<TParams, TResponse, TBody, TQuery> => {
   return (req, res, next) => {
     const { query, body, params } = req;
@@ -39,6 +45,7 @@ export const makeTypeSafeHandler = <
         return res.sendStatus(400);
       }
     }
-    return handler(req, res, next);
+
+    return catchAsync(handler(req, res, next) as any);
   };
 };

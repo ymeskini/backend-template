@@ -28,24 +28,28 @@ Sentry.init({
 initMiddleware(app);
 
 // ==== ROUTES ====
-app.get('/health', (_req, res) => {
-  res.set('Cache-Control', 'no-store').status(200).json({ message: 'OK' });
-});
-
 app.get(
-  '/hello/:id',
+  '/demo/:username',
   makeTypeSafeHandler(
     {
-      body: z.object({
-        name: z.string(),
+      params: z.object({
+        username: z.string(),
       }),
       response: z.object({
         message: z.string(),
+        user: z.any(),
       }),
     },
-    (req, res) => {
-      const { name } = req.body;
-      res.json({ message: `Hello ${name}` });
+    async (req, res, next) => {
+      const { username } = req.params;
+      const githubUserRequest = await fetch(
+        `https://api.github.com/users/${username}`,
+      );
+      if (!githubUserRequest.ok) {
+        return next(new AppError('User not found', githubUserRequest.status));
+      }
+      const githubUser = await githubUserRequest.json();
+      res.json({ message: `Hello ${username}`, user: githubUser });
     },
   ),
 );
