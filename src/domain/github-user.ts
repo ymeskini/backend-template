@@ -1,0 +1,38 @@
+import { z } from 'zod';
+
+export const GithubUserSchema = z.object({
+  login: z.string(),
+  id: z.number(),
+  node_id: z.string(),
+  avatar_url: z.string(),
+  gravatar_id: z.union([z.string(), z.null()]),
+  url: z.string(),
+  html_url: z.string(),
+  followers_url: z.string(),
+  following_url: z.string(),
+  gists_url: z.string(),
+  starred_url: z.string(),
+  subscriptions_url: z.string(),
+  organizations_url: z.string(),
+  repos_url: z.string(),
+  events_url: z.string(),
+  received_events_url: z.string(),
+  type: z.string().optional(),
+  site_admin: z.boolean().optional(),
+  name: z.union([z.string(), z.null()]).optional(),
+  company: z.union([z.string(), z.null()]).optional(),
+  blog: z.union([z.string(), z.null()]).optional(),
+  location: z.union([z.string(), z.null()]).optional(),
+  email: z.union([z.string(), z.null()]).optional(),
+  hireable: z.union([z.string(), z.null()]).optional(),
+  bio: z.union([z.string(), z.null()]).optional(),
+  twitter_username: z.union([z.string(), z.null()]).optional(),
+  public_repos: z.number().optional(),
+  public_gists: z.number().optional(),
+  followers: z.number().optional(),
+  following: z.number().optional(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+});
+
+export type GithubUser = z.infer<typeof GithubUserSchema>;

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { ParsedQs } from 'qs';
 
 import { catchAsync } from './catchAsync';
+import { __DEV__ } from './env';
 
 export const makeTypeSafeHandler = <
   TQuery extends ParsedQs = any,
@@ -46,6 +47,19 @@ export const makeTypeSafeHandler = <
       } catch (e) {
         return sendBadRequest();
       }
+    }
+
+    if (config.response && __DEV__) {
+      const originalJson = res.json.bind(res);
+      const responseSchema = config.response;
+      res.json = (body) => {
+        try {
+          responseSchema.parse(body);
+        } catch (e) {
+          return sendBadRequest();
+        }
+        return originalJson(body);
+      };
     }
 
     return catchAsync<TParams, TResponse, TBody, TQuery>(
