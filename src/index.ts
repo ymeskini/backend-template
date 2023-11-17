@@ -3,6 +3,7 @@ import express from 'express';
 import * as Sentry from '@sentry/node';
 import z from 'zod';
 import { createClient } from 'redis';
+import { WebSocketServer } from 'ws';
 
 import { __DEV__, envVariables } from './utils/env';
 import { initMiddleware } from './middleware';
@@ -16,16 +17,18 @@ import { GithubUserSchema } from './domain/github-user';
 import { cacheResponse } from './middleware/cacheResponse';
 import { RedisRepository } from './infra/redis.repository';
 import { rateLimit } from './middleware/rateLimit';
+import { RealtimeRepository } from './infra/realtime.repository';
 
 const app = express();
 const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
 const redis = createClient({
   url: envVariables.REDIS_URL,
   password: envVariables.REDIS_PASSWORD,
 });
-
 export type RedisClientType = typeof redis;
 
+const realtimeRepository = new RealtimeRepository(wss, redis);
 const redisRepository = new RedisRepository(redis);
 const githubUserRepository = new GithubUserApiRepository();
 const retrieveGithubUserUseCase = new RetrieveGithubUserUseCase(
@@ -45,7 +48,6 @@ Sentry.init({
 
 const start = async () => {
   await redis.connect();
-
   // keep this before all routes
   initMiddleware(app, redis);
 
