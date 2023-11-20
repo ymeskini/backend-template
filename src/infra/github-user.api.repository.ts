@@ -1,6 +1,6 @@
 import { GithubUserRepository } from '../app/github-user.repository';
 import { GithubUser } from '../domain/github-user';
-import { AppError } from '../utils/AppError';
+import { AppError } from '../lib/AppError';
 
 export class GithubUserApiRepository implements GithubUserRepository {
   async findByUsername(username: string) {

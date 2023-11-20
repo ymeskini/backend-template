@@ -1,4 +1,4 @@
-import { RedisClientType } from '..';
+import { RedisClientType } from './modules/redis';
 
 export class RedisRepository {
   constructor(private readonly redis: RedisClientType) {}

@@ -1,11 +1,15 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  PORT: z.string().default('4444'),
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_ACCESS_KEY: z.string(),
   NODE_ENV: z.string().default('development'),
-  SENTRY_DSN: z.string().optional(),
-  REDIS_URL: z.string(),
+  PORT: z.string().default('4444'),
+  POSTMARK_API_KEY: z.string(),
+  REDIS_HOST: z.string(),
   REDIS_PASSWORD: z.string(),
+  REDIS_PORT: z.string().default('6379'),
+  SENTRY_DSN: z.string().optional(),
   SESSION_SECRET: z.string(),
 });
 

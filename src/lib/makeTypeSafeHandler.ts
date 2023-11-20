@@ -2,9 +2,6 @@ import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { z } from 'zod';
 import { ParsedQs } from 'qs';
 
-import { catchAsync } from './catchAsync';
-import { __DEV__ } from './env';
-
 export const makeTypeSafeHandler = <
   TQuery extends ParsedQs = any,
   TBody extends Record<string, any> = any,
@@ -49,21 +46,6 @@ export const makeTypeSafeHandler = <
       }
     }
 
-    if (config.response && __DEV__) {
-      const originalJson = res.json.bind(res);
-      const responseSchema = config.response;
-      res.json = (body) => {
-        try {
-          responseSchema.parse(body);
-        } catch (e) {
-          return sendBadRequest();
-        }
-        return originalJson(body);
-      };
-    }
-
-    return catchAsync<TParams, TResponse, TBody, TQuery>(
-      handler(req, res, next),
-    );
+    return handler(req, res, next);
   };
 };

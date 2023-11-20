@@ -1,6 +1,7 @@
 import { Handler } from 'express';
-import { RedisClientType } from '..';
-import { AppError } from '../utils/AppError';
+
+import { AppError } from '../../lib/AppError';
+import { RedisClientType } from '../modules/redis';
 
 const getCurrentTimestampMs = () => new Date().getTime();
 const isTypeOfNumber = (value: unknown): value is number =>
