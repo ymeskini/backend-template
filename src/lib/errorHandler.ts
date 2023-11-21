@@ -4,6 +4,7 @@ import { STATUS_CODES } from 'http';
 import { AppError } from './AppError';
 import { __DEV__ } from './env';
 import { logger } from './logger';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 const sendErrorDev = (err: AppError, res: Response) => {
   logger.info(err);
@@ -36,9 +37,16 @@ export const globalErrorHandler =
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (err, _, res, _next) => {
     err.statusCode = err.statusCode || 500;
+    const error = { ...err };
+
+    if (err instanceof JsonWebTokenError) {
+      error.statusCode = 401;
+      error.isOperational = true;
+    }
+
     if (__DEV__) {
-      sendErrorDev(err, res);
+      sendErrorDev(error, res);
     } else {
-      sendErrorProd(err, res);
+      sendErrorProd(error, res);
     }
   };

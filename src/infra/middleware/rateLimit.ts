@@ -98,7 +98,7 @@ export const rateLimit =
     try {
       const limiter =
         config.type === 'fixed-window' ? hitFixedWindow : hitSlidingWindow;
-      const result = await limiter(redis, req.session.id, config);
+      const result = await limiter(redis, req.sessionID, config);
 
       if (result === -1) {
         return res.status(429).json({
