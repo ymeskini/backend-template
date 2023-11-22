@@ -1,5 +1,5 @@
 declare module 'express-session' {
   interface SessionData {
-    token?: string;
+    // here you can add the properties you want to the session
   }
 }

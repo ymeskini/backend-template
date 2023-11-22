@@ -3,15 +3,21 @@ import z from 'zod';
 import { randomUUID } from 'crypto';
 
 import { RedisClientType } from './modules/redis';
+import { verifyToken } from '../lib/token';
+import { logger } from '../lib/logger';
 
-const messageSchema = z.object({
+const incomingMessageSchema = z.object({
   type: z.union([
     z.literal('RESPONSE'),
     z.literal('LISTEN'),
     z.literal('MESSAGE'),
     z.literal('PING'),
     z.literal('PONG'),
+    z.literal('AUTH'),
   ]),
+  data: z.object({
+    token: z.string(),
+  }),
 });
 
 declare module 'ws' {
@@ -35,7 +41,6 @@ export class RealtimeRepository {
   ) {
     this.publisher = redisClient.duplicate();
     this.subscriber = redisClient.duplicate();
-
     this.clients = new Map();
 
     wss.on('connection', this.onConnection);
@@ -45,22 +50,18 @@ export class RealtimeRepository {
     await this.publisher.connect();
     await this.subscriber.connect();
 
-    await this.subscriber.subscribe('realtime', (message) => {
-      this.clients.forEach((client) => {
-        client.send(message);
-      });
-    });
+    await this.subscriber.subscribe('realtime', this.onReceivedMessage);
   }
 
   private onConnection = (ws: WebSocket) => {
     const socketId = randomUUID();
+    const interval = setInterval(this.heartbeat(socketId), HEARTBEAT_INTERVAL);
 
     ws.id = socketId;
     ws.isAlive = true;
-    this.clients.set(socketId, ws);
-
-    const interval = setInterval(this.heartbeat(socketId), HEARTBEAT_INTERVAL);
     ws.interval = interval;
+
+    this.clients.set(socketId, ws);
 
     ws.on('message', this.validateIncomingMessages(this.onMessage, socketId));
     ws.on('close', this.onClose(socketId));
@@ -80,7 +81,7 @@ export class RealtimeRepository {
       }
 
       ws.isAlive = false;
-      ws.send(JSON.stringify({ type: 'PING' }));
+      this.sendMessage(socketId, { type: 'PING' });
     }
   };
 
@@ -119,42 +120,76 @@ export class RealtimeRepository {
   };
 
   private onError = (socketId: string) => (error: Error) => {
-    console.error(`Socket ${socketId} error: ${error.message}`);
+    logger.error(`Socket ${socketId} error: ${error.message}`);
   };
 
   private validateIncomingMessages = (
     onMessage: typeof this.onMessage,
     socketId: string,
   ) => {
-    const ws = this.clients.get(socketId);
     return async (data: Buffer) => {
       try {
-        const message = JSON.parse(data.toString());
-        const msg = await messageSchema.parseAsync(message);
-        return onMessage(msg, socketId);
+        const message = await incomingMessageSchema.parseAsync(
+          JSON.parse(data.toString()),
+        );
+        return onMessage(message, socketId);
       } catch {
-        if (ws) {
-          ws.send(
-            JSON.stringify({
-              type: 'RESPONSE',
-              error: 'Invalid message',
-            }),
-          );
-          this.onClose(socketId)();
-        }
+        this.sendMessage(socketId, {
+          type: 'RESPONSE',
+          error: 'Invalid message',
+        });
+        this.onClose(socketId)();
       }
     };
   };
 
   private onMessage = async (
-    message: z.infer<typeof messageSchema>,
+    message: z.infer<typeof incomingMessageSchema>,
     socketId: string,
   ) => {
-    // all the logic of the messages goes here
-    if (message.type === 'MESSAGE') {
-      await this.publisher.publish('realtime', JSON.stringify(message));
-    } else if (message.type === 'PONG') {
-      this.onPong(socketId)();
+    const ws = this.clients.get(socketId);
+    if (!ws) {
+      return;
     }
+    switch (message.type) {
+      case 'PONG':
+        this.onPong(socketId)();
+        break;
+      case 'MESSAGE':
+        await this.publisher.publish('realtime', JSON.stringify(message));
+        break;
+      case 'AUTH':
+        try {
+          verifyToken(message.data.token);
+          this.sendMessage(socketId, {
+            type: 'RESPONSE',
+            data: {
+              status: 'authenticated',
+            },
+          });
+        } catch {
+          this.sendMessage(socketId, {
+            type: 'RESPONSE',
+            error: 'Invalid token',
+          });
+          this.onClose(socketId)();
+        }
+        break;
+      default:
+        return;
+    }
+  };
+
+  private sendMessage = (socketId: string, message: object) => {
+    const ws = this.clients.get(socketId);
+    if (ws) {
+      ws.send(JSON.stringify(message));
+    }
+  };
+
+  private onReceivedMessage = (message: string) => {
+    this.clients.forEach((client) => {
+      client.send(message);
+    });
   };
 }

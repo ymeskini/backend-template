@@ -19,6 +19,7 @@ import { rateLimit } from './infra/middleware/rateLimit';
 import { RealtimeRepository } from './infra/realtime.repository';
 import { redis } from './infra/modules/redis';
 import { catchAsync } from './lib/catchAsync';
+import { generateToken } from './lib/token';
 
 const app = express();
 const server = http.createServer(app);
@@ -50,32 +51,42 @@ const start = async () => {
   initMiddleware(app, redis);
 
   // ==== ROUTES ====
-  app.get(
-    '/demo/:username',
-    rateLimit(redis, {
-      interval: 60,
-      maxHits: 10,
-      type: 'fixed-window',
-    }),
-    cacheResponse(
-      redisRepository,
-      (req) => `github-user:${req.params['username']}`,
-    ),
-    makeTypeSafeHandler(
-      {
-        params: z.object({
-          username: z.string().min(5),
-        }),
-        response: GithubUserSchema,
-      },
-      catchAsync(async (req, res) => {
-        const { username } = req.params;
-        const githubUser = await retrieveGithubUserUseCase.handle(username);
-        res.json(githubUser);
+  app
+    .get(
+      '/demo/:username',
+      rateLimit(redis, {
+        interval: 60,
+        maxHits: 10,
+        type: 'fixed-window',
       }),
-    ),
-  );
-
+      cacheResponse(
+        redisRepository,
+        (req) => `github-user:${req.params['username']}`,
+      ),
+      makeTypeSafeHandler(
+        {
+          params: z.object({
+            username: z.string().min(5),
+          }),
+          response: GithubUserSchema,
+        },
+        catchAsync(async (req, res) => {
+          const { username } = req.params;
+          const githubUser = await retrieveGithubUserUseCase.handle(username);
+          res.json(githubUser);
+        }),
+      ),
+    )
+    .get('/ws/auth', (_req, res) => {
+      // TODO: check in the session if you want to authenticate the user
+      // for websocket connection
+      res.json({
+        status: 'authenticated',
+        token: generateToken({
+          userId: '123',
+        }),
+      });
+    });
   // ================
 
   app
