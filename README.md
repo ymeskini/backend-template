@@ -30,3 +30,26 @@ Typecheck with TypeScript
 npm run type
 ```
 
+
+# Realtime
+
+Overall we should follow as much as possible the PubSub from [Twitch](https://dev.twitch.tv/docs/pubsub/):
+
+For realtime updates we use Redis Pub/Sub pattern in combination with WebSockets.
+Each server is responsible of listening to `realtime` channel and broadcasting the messages the clients.
+We decide to broadcast or not a message based on the `topics` and each client has a list of topics it's interested in.
+
+The naming of a topic should follow `[resource]:[subresource]:[action]` pattern.
+Some examples:
+- `channel:update`
+- `channel:follow`
+- `channel:prediction:lock`
+
+Some `topics` might need Authorization so we need to check the scopes of the user. The scopes will be available in the JWT token provided by the `/ws/auth` endpoint.
+
+The scopes are formatted like: `user:read:chat`
+
+To access it the client should retrieve a JWT token from `/ws/auth` generally speaking the client is already authenticated through a login process and has a session cookie.
+
+To send messages or listen to topics the token will be required.
+

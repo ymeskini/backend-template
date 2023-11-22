@@ -17,7 +17,6 @@ export const initMiddleware = (app: Express, redis: RedisClientType) => {
 
   app
     .set('trust proxy', 1)
-    // The request handler must be the first middleware on the app
     .use(Sentry.Handlers.requestHandler())
     .use(express.json())
     .use(express.urlencoded({ extended: true }))

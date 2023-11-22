@@ -3,6 +3,7 @@ import { z } from 'zod';
 const envSchema = z.object({
   AWS_ACCESS_KEY_ID: z.string(),
   AWS_SECRET_ACCESS_KEY: z.string(),
+  EMAIL_SUPPORT: z.string(),
   JWT_SECRET: z.string(),
   NODE_ENV: z.string().default('development'),
   PORT: z.string().default('4444'),

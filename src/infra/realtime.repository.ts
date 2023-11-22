@@ -46,6 +46,10 @@ export class RealtimeRepository {
     wss.on('connection', this.onConnection);
   }
 
+  async publishMessage(message: object) {
+    await this.publisher.publish('realtime', JSON.stringify(message));
+  }
+
   async init() {
     await this.publisher.connect();
     await this.subscriber.connect();

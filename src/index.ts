@@ -93,7 +93,6 @@ const start = async () => {
     .all('*', (_req, _res, next) => {
       next(new AppError('Not Found', 404));
     })
-    // The error handler must be before any other error middleware and after all controllers
     .use(Sentry.Handlers.errorHandler())
     .use(globalErrorHandler());
 
