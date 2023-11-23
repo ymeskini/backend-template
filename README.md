@@ -53,3 +53,16 @@ To access it the client should retrieve a JWT token from `/ws/auth` generally sp
 
 To send messages or listen to topics the token will be required.
 
+
+# Tests
+
+## Unit tests
+
+The goal of unit tests is to be as fast as possible to be able to get a quick feedback loop with TDD.
+The heavy modules should be implemented for tests with adapter pattern to be able to implement them easily (cf. repository pattern with in memory implementation)
+
+## Integration tests (e2e)
+
+We use [TestContainer](https://node.testcontainers.org/features/compose/) to run our tests in a docker environment either we want only to have the part of the infra needed for tests for example a DB. 
+
+Or if we want to run e2e tests we run `docker-compose.yml` to run the whole infra.

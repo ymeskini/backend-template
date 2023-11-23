@@ -16,7 +16,7 @@ import { GithubUserSchema } from './domain/github-user';
 import { cacheResponse } from './infra/middleware/cacheResponse';
 import { RedisRepository } from './infra/redis.repository';
 import { rateLimit } from './infra/middleware/rateLimit';
-import { RealtimeRepository } from './infra/realtime.repository';
+import { RealtimeRepository } from './infra/realtime.gateway';
 import { redis } from './infra/modules/redis';
 import { catchAsync } from './lib/catchAsync';
 import { generateToken } from './lib/token';
