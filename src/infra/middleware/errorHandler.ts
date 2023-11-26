@@ -1,10 +1,11 @@
 import { ErrorRequestHandler, Response } from 'express';
 import { STATUS_CODES } from 'http';
+import { ZodError } from 'zod';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 
-import { AppError } from './AppError';
-import { __DEV__ } from './env';
-import { logger } from './logger';
-import { JsonWebTokenError } from 'jsonwebtoken';
+import { AppError } from '../../lib/AppError';
+import { __DEV__ } from '../../lib/env';
+import { logger } from '../../lib/logger';
 
 const sendErrorDev = (err: AppError, res: Response) => {
   logger.info(err);
@@ -39,9 +40,16 @@ export const globalErrorHandler =
     err.statusCode = err.statusCode || 500;
     const error = { ...err };
 
-    if (err instanceof JsonWebTokenError) {
+    if (err instanceof JsonWebTokenError || err instanceof TokenExpiredError) {
+      // cf. https://www.npmjs.com/package/jsonwebtoken#errors--codes
       error.statusCode = 401;
       error.isOperational = true;
+    }
+
+    if (err instanceof ZodError) {
+      error.statusCode = 400;
+      error.isOperational = true;
+      logger.info(err.issues);
     }
 
     if (__DEV__) {

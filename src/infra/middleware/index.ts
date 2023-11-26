@@ -25,21 +25,20 @@ export const initMiddleware = (app: Express, redis: RedisClientType) => {
     .use(helmet())
     .use(
       session({
+        name: 'sid',
         store: redisStore,
-        // those options are critical when updating the session
-        // and a request is made during the session update (in parallel)
-        // when you want to be sure that the session is updated before
-        // use this snippet in the handler
-        // req.session.save(function(err) {
-        //    res.send('OK')
-        // })
-        resave: false, // required: force lightweight session keep alive (touch)
-        saveUninitialized: false, // recommended: only save session when data exists
-        secret: envVariables.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        unset: 'destroy',
+        secret: [envVariables.SESSION_SECRET],
         cookie: {
           secure: !__DEV__,
           httpOnly: true,
+          signed: true,
           sameSite: 'strict',
+          domain: envVariables.SESSION_DOMAIN,
+          path: '/',
+          maxAge: 1000 * 60 * 60 * 24 * 30,
         },
       }),
     );

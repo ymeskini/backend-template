@@ -1,7 +1,7 @@
 import { verify, sign, SignOptions } from 'jsonwebtoken';
 import { envVariables } from './env';
 
-type Payload = { userId: string } | string;
+type Payload = { userId: string; scopes: string[] } | string;
 
 export const generateToken = (payload: Payload, options?: SignOptions) => {
   return sign(payload, envVariables.JWT_SECRET, options);

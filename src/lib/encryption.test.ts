@@ -1,5 +1,8 @@
-import { decrypt, encrypt } from './encryption';
 import crypto from 'crypto';
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
+
+import { decrypt, encrypt } from './encryption';
 
 describe('encryption', () => {
   const key = crypto.randomBytes(32).toString('base64');
@@ -9,6 +12,6 @@ describe('encryption', () => {
       'this is a secret that should not be shared and should be securely stored somewhere';
     const encrypted = encrypt(text, key);
     const decrypted = decrypt(encrypted, key);
-    expect(decrypted).toBe(text);
+    assert.equal(decrypted, text);
   });
 });

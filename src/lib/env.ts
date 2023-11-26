@@ -5,6 +5,7 @@ const envSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string(),
   EMAIL_SUPPORT: z.string(),
   JWT_SECRET: z.string(),
+  MONGO_DB_URL: z.string(),
   NODE_ENV: z.string().default('development'),
   PORT: z.string().default('4444'),
   POSTMARK_API_KEY: z.string(),
@@ -12,6 +13,7 @@ const envSchema = z.object({
   REDIS_PASSWORD: z.string(),
   REDIS_PORT: z.string().default('6379'),
   SENTRY_DSN: z.string().optional(),
+  SESSION_DOMAIN: z.string(),
   SESSION_SECRET: z.string(),
 });
 
