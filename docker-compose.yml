@@ -1,7 +1,7 @@
 services:
   app:
     restart: always
-    build: .
+    build: ./Dockerfile.dev
     ports:
       - '4444:4444'
     env_file: .env

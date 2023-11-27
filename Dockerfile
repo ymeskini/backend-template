@@ -1,15 +1,19 @@
-FROM node:20-alpine
+FROM node:20-alpine as base
+LABEL fly_launch_runtime="Node.js"
 
-RUN mkdir -p /app
 WORKDIR /app
 
-COPY package.json package-lock.json .swcrc /app/
-COPY src /app/src
+COPY package-lock.json package.json .swcrc ./
+RUN npm ci
+COPY . .
 
-RUN npm ci && npm cache clean --force
-RUN npm i @swc/core --save-dev
+FROM base as build
 RUN npm run build
 
-EXPOSE 4444
+FROM node:20-alpine
+COPY package-lock.json package.json ./
+RUN npm ci --omit=dev
+COPY --from=build /app/dist ./
 
-CMD ["npm", "run", "dev"]
+EXPOSE 3000
+CMD ["node", "index.js"]

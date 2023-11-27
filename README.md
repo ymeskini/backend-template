@@ -66,3 +66,17 @@ The heavy modules should be implemented for tests with adapter pattern to be abl
 We use [TestContainer](https://node.testcontainers.org/features/compose/) to run our tests in a docker environment either we want only to have the part of the infra needed for tests for example a DB. 
 
 Or if we want to run e2e tests we run `docker-compose.yml` to run the whole infra.
+
+
+# Deployment
+
+We use fly.io to deploy our app. The configuration is in `fly.toml` file.
+Before launching make sure to define all the environment variables with:
+```shell
+flyctl secrets set SECRET="XYZ"
+```
+Or directly in the web interface.
+Change the `app` name in the `fly.toml` file to match your app name. and SESSION_DOMAIN to match your domain.
+
+
+It'll use automatically the `Dockerfile` to build the image and deploy it.
