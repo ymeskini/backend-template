@@ -12,6 +12,7 @@ import { AppError } from './lib/AppError';
 import { RealtimeRepository } from './infra/realtime.gateway';
 import { redis } from './infra/modules/redis';
 import { authRouter } from './infra/auth.routes';
+import { healthRouter } from './infra/health.routes';
 
 const app = express();
 const server = http.createServer(app);
@@ -40,6 +41,7 @@ const start = async () => {
 
   // ==== ROUTES ====
   app.use('/auth', authRouter);
+  app.use('/health', healthRouter);
   // ================
 
   app

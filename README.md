@@ -45,11 +45,11 @@ Some examples:
 - `channel:follow`
 - `channel:prediction:lock`
 
-Some `topics` might need Authorization so we need to check the scopes of the user. The scopes will be available in the JWT token provided by the `/ws/auth` endpoint.
+Some `topics` might need Authorization so we need to check the scopes of the user. The scopes will be available in the JWT token provided by the `/auth/ws` endpoint.
 
 The scopes are formatted like: `user:read:chat`
 
-To access it the client should retrieve a JWT token from `/ws/auth` generally speaking the client is already authenticated through a login process and has a session cookie.
+To access it the client should retrieve a JWT token from `/auth/ws` generally speaking the client is already authenticated through a login process and has a session cookie.
 
 To send messages or listen to topics the token will be required.
 
@@ -70,6 +70,7 @@ Or if we want to run e2e tests we run `docker-compose.yml` to run the whole infr
 
 # Deployment
 
+## Setup
 We use fly.io to deploy our app. The configuration is in `fly.toml` file.
 Before launching make sure to define all the environment variables with:
 ```shell
@@ -80,3 +81,24 @@ Change the `app` name in the `fly.toml` file to match your app name. and SESSION
 
 
 It'll use automatically the `Dockerfile` to build the image and deploy it.
+
+To create the app and deploy in fly.io run:
+```shell
+fly launch
+```
+
+For the following deployments you can run:
+```shell
+fly deploy
+```
+
+
+## Redis
+Fly.io provides Upstash Redis as a service so it's possible to get a Redis replica as close a possible from our containers. Just have a look at the URL provided by Fly.io to check the Redis URL.
+
+To access usage from Upstash console visit: https://console.upstash.com/flyio/redis
+
+For the complete documentation have a look at https://fly.io/docs/reference/redis/
+
+
+

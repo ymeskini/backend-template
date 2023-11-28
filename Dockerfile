@@ -10,7 +10,7 @@ COPY . .
 FROM base as build
 RUN npm run build
 
-FROM node:20-alpine
+FROM node:20-alpine as deployment
 COPY package-lock.json package.json ./
 RUN npm ci --omit=dev
 COPY --from=build /app/dist ./
