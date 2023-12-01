@@ -1,4 +1,4 @@
-import http from 'http';
+import http from 'node:http';
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import { WebSocketServer } from 'ws';

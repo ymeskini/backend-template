@@ -1,5 +1,5 @@
 import { ErrorRequestHandler, Response } from 'express';
-import { STATUS_CODES } from 'http';
+import { STATUS_CODES } from 'node:http';
 import { ZodError } from 'zod';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 

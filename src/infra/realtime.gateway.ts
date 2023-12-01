@@ -1,6 +1,6 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import z from 'zod';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 
 import { RedisClientType } from './modules/redis';
 import { verifyToken } from '../lib/token';

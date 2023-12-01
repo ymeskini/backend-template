@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 
 const ENCRYPTION_METHOD = 'aes-256-gcm';
 

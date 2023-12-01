@@ -79,6 +79,10 @@ flyctl secrets set SECRET="XYZ"
 Or directly in the web interface.
 Change the `app` name in the `fly.toml` file to match your app name. and SESSION_DOMAIN to match your domain.
 
+For Sentry DSN run this command, this will create a project and add `SENTRY_DSN` to your secrets:
+```shell
+flyctl ext sentry create 
+```
 
 It'll use automatically the `Dockerfile` to build the image and deploy it.
 
