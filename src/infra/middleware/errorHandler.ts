@@ -1,7 +1,7 @@
 import { ErrorRequestHandler, Response } from 'express';
 import { STATUS_CODES } from 'node:http';
 import { ZodError } from 'zod';
-import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import { errors } from 'jose';
 
 import { AppError } from '../../lib/AppError';
 import { __DEV__ } from '../../lib/env';
@@ -40,8 +40,7 @@ export const globalErrorHandler =
     err.statusCode = err.statusCode || 500;
     const error = { ...err };
 
-    if (err instanceof JsonWebTokenError || err instanceof TokenExpiredError) {
-      // cf. https://www.npmjs.com/package/jsonwebtoken#errors--codes
+    if (err instanceof errors.JOSEError) {
       error.statusCode = 401;
       error.isOperational = true;
     }

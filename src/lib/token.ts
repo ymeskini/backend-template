@@ -1,12 +1,16 @@
-import { verify, sign, SignOptions } from 'jsonwebtoken';
+import { SignJWT, jwtVerify } from 'jose';
 import { envVariables } from './env';
 
-type Payload = { userId: string; scopes: string[] } | string;
+type Payload = any;
 
-export const generateToken = (payload: Payload, options?: SignOptions) => {
-  return sign(payload, envVariables.JWT_SECRET, options);
+const secret = new TextEncoder().encode(envVariables.JWT_SECRET);
+
+export const generateToken = (payload: Payload) => {
+  return new SignJWT(payload).setProtectedHeader({ alg: 'HS256' }).sign(secret);
 };
 
 export const verifyToken = (token: string) => {
-  return verify(token, envVariables.JWT_SECRET);
+  return jwtVerify(token, secret, {
+    algorithms: ['HS256'],
+  });
 };

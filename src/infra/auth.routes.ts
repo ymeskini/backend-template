@@ -7,7 +7,7 @@ const authRouter = Router();
 authRouter.get(
   '/ws',
   catchAsync(async (_req, res) => {
-    const token = generateToken({
+    const token = await generateToken({
       userId: '123',
       scopes: [],
     });
