@@ -1,17 +1,24 @@
-import { Handler } from 'express';
+import { Handler, Request } from 'express';
 
 import { AppError } from '../../lib/AppError';
-import { RedisClientType } from '../modules/redis';
+import { RedisClientType, redis } from '../modules/redis';
 
 const getCurrentTimestampMs = () => new Date().getTime();
 const isTypeOfNumber = (value: unknown): value is number =>
   typeof value === 'number';
 
+const extractIp = (req: Request) => {
+  const forwardIp = req.headers?.['x-forwarded-for'];
+  const socketAddress = req.socket.remoteAddress;
+
+  return forwardIp?.toString() || socketAddress?.toString() || 'unknown';
+};
+
 /**
  * Record a hit against a unique resource that is being
  * rate limited.  Will return -1 when the resource has hit
  * the rate limit.
- * @param sessionId - the unique name of the resource.
+ * @param ipAddress - the unique name of the resource.
  * @param opts - object containing interval and maxHits details:
  *   {
  *     interval: 1,
@@ -22,10 +29,10 @@ const isTypeOfNumber = (value: unknown): value is number =>
  */
 async function hitFixedWindow(
   client: RedisClientType,
-  sessionId: string,
+  ipAddress: string,
   opts: { interval: number; maxHits: number },
 ): Promise<number> {
-  const key = `limiter:fixed-window:${sessionId}`;
+  const key = `limiter:fixed-window:${ipAddress}`;
   const [hits] = await client
     .multi()
     .incr(key)
@@ -51,13 +58,13 @@ async function hitFixedWindow(
 
 const hitSlidingWindow = async (
   client: RedisClientType,
-  sessionId: string,
+  ipAddress: string,
   opts: {
     interval: number;
     maxHits: number;
   },
 ) => {
-  const key = `limiter:window:${sessionId}`;
+  const key = `limiter:window:${ipAddress}`;
   const now = getCurrentTimestampMs();
   const transaction = client.multi();
 
@@ -85,20 +92,24 @@ const hitSlidingWindow = async (
   return opts.maxHits - hits;
 };
 
+type RateLimitConfig = {
+  interval: number;
+  maxHits: number;
+  type: 'fixed-window' | 'sliding-window';
+};
+
 export const rateLimit =
-  (
-    redis: RedisClientType,
-    config: {
-      interval: number;
-      maxHits: number;
-      type: 'fixed-window' | 'sliding-window';
-    },
-  ): Handler =>
+  (config: RateLimitConfig): Handler =>
   async (req, res, next) => {
     try {
       const limiter =
         config.type === 'fixed-window' ? hitFixedWindow : hitSlidingWindow;
-      const result = await limiter(redis, req.sessionID, config);
+      const ip = extractIp(req);
+
+      const result = await limiter(redis, ip, {
+        interval: config.interval,
+        maxHits: config.maxHits,
+      });
 
       if (result === -1) {
         return res.status(429).json({
