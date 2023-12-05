@@ -2,7 +2,9 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   AWS_ACCESS_KEY_ID: z.string(),
+  AWS_REGION: z.string().default('eu-central-1'),
   AWS_SECRET_ACCESS_KEY: z.string(),
+  AWS_S3_BUCKET_NAME: z.string(),
   EMAIL_SUPPORT: z.string(),
   JWT_SECRET: z.string(),
   MONGO_DB_URL: z.string(),

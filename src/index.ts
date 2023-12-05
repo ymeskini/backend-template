@@ -13,12 +13,14 @@ import { RealtimeRepository } from './infra/realtime.gateway';
 import { redis } from './infra/modules/redis';
 import { authRouter } from './infra/auth.routes';
 import { healthRouter } from './infra/health.routes';
+import { JWTProvider } from './infra/jwt.provider';
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const mongoClient = new MongoClient(envVariables.MONGO_DB_URL);
-const realtimeRepository = new RealtimeRepository(wss, redis);
+export const jwtProvider = new JWTProvider();
+const realtimeRepository = new RealtimeRepository(wss, redis, jwtProvider);
 
 Sentry.init({
   enabled: !__DEV__,
@@ -35,6 +37,7 @@ Sentry.init({
 const start = async () => {
   await mongoClient.connect();
   await redis.connect();
+  await jwtProvider.load();
   await realtimeRepository.init();
 
   // keep this before all routes

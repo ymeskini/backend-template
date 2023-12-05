@@ -1,6 +1,11 @@
 # Getting Started
 To run the app you'll need to create a `.env` file from the `.env.example` file and fill in the required values.
 
+First run:
+```shell
+npm run generate:keys
+```
+
 Then you'll need Docker installed and run:
 ```shell
 docker-compose up --build

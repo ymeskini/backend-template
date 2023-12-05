@@ -1,5 +1,5 @@
 import { writeFileSync } from 'fs';
-import { exportSPKI, exportPKCS8, generateKeyPair } from 'jose';
+import { generateKeyPair, exportPKCS8, exportSPKI } from 'jose';
 import { join } from 'path';
 
 const generateKeyPairKeys = async () => {

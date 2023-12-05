@@ -6,4 +6,5 @@ export const s3Client = new S3Client({
     accessKeyId: envVariables.AWS_ACCESS_KEY_ID,
     secretAccessKey: envVariables.AWS_SECRET_ACCESS_KEY,
   },
+  region: envVariables.AWS_REGION,
 });

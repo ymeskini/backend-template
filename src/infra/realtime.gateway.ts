@@ -3,22 +3,26 @@ import z from 'zod';
 import { randomUUID } from 'node:crypto';
 
 import { RedisClientType } from './modules/redis';
-import { verifyToken } from '../lib/token';
 import { logger } from '../lib/logger';
+import { JWTProvider } from './jwt.provider';
 
-const incomingMessageSchema = z.object({
-  type: z.union([
-    z.literal('RESPONSE'),
-    z.literal('LISTEN'),
-    z.literal('MESSAGE'),
-    z.literal('PING'),
-    z.literal('PONG'),
-    z.literal('AUTH'),
-  ]),
+const baseSchema = z.object({
+  type: z
+    .literal('RESPONSE')
+    .or(z.literal('LISTEN'))
+    .or(z.literal('MESSAGE'))
+    .or(z.literal('PING'))
+    .or(z.literal('PONG')),
+});
+
+const authSchema = z.object({
+  type: z.literal('AUTH'),
   data: z.object({
     token: z.string(),
   }),
 });
+
+const incomingMessageSchema = z.union([baseSchema, authSchema]);
 
 declare module 'ws' {
   interface WebSocket {
@@ -38,6 +42,7 @@ export class RealtimeRepository {
   constructor(
     readonly wss: WebSocketServer,
     readonly redisClient: RedisClientType,
+    readonly jwtProvider: JWTProvider,
   ) {
     this.publisher = redisClient.duplicate();
     this.subscriber = redisClient.duplicate();
@@ -164,7 +169,7 @@ export class RealtimeRepository {
         break;
       case 'AUTH':
         try {
-          verifyToken(message.data.token);
+          await this.jwtProvider.verifyToken(message.data.token);
           this.sendMessage(socketId, {
             type: 'RESPONSE',
             data: {

@@ -19,7 +19,8 @@
     "start": "docker-compose up",
     "test": "SWCRC=true node -r @swc-node/register --test src/**/*.test.ts",
     "type": "tsc --noEmit",
-    "type:watch": "tsc --watch"
+    "type:watch": "tsc --watch",
+    "generate:keys": "SWCRC=true node -r @swc-node/register scripts/generatePrivateKey.ts"
   },
   "author": "Youssef Meskini",
   "license": "ISC",
