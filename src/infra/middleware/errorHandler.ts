@@ -3,9 +3,9 @@ import { STATUS_CODES } from 'node:http';
 import { ZodError } from 'zod';
 import { errors } from 'jose';
 
-import { AppError } from '../../lib/AppError';
-import { __DEV__ } from '../../lib/env';
-import { logger } from '../../lib/logger';
+import { AppError } from '../../lib/AppError.js';
+import { __DEV__ } from '../../lib/env.js';
+import { logger } from '../../lib/logger.js';
 
 const sendErrorDev = (err: AppError, res: Response) => {
   logger.info(err);

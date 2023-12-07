@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { catchAsync } from '../lib/catchAsync';
-import { rateLimit } from './middleware/rateLimit';
-import { jwtProvider } from '..';
+import { catchAsync } from '../lib/catchAsync.js';
+import { rateLimit } from './middleware/rateLimit.js';
+import { jwtProvider } from '../index.js';
 
 const authRouter = Router();
 

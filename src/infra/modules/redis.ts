@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-import { envVariables } from '../../lib/env';
+import { envVariables } from '../../lib/env.js';
 
 export const redis = createClient({
   password: envVariables.REDIS_PASSWORD,

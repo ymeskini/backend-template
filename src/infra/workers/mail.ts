@@ -1,8 +1,8 @@
 import { Queue, Worker } from 'bullmq';
 import { ServerClient } from 'postmark';
 
-import { envVariables } from '../../lib/env';
-import { sharedRedisConnection } from './redisConnection';
+import { envVariables } from '../../lib/env.js';
+import { sharedRedisConnection } from './redisConnection.js';
 
 const client = new ServerClient(envVariables.POSTMARK_API_KEY);
 type ReturnedData = Awaited<ReturnType<typeof client.sendEmailWithTemplate>>;

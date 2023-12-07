@@ -6,8 +6,8 @@ import * as Sentry from '@sentry/node';
 import session from 'express-session';
 import RedisStore from 'connect-redis';
 
-import { __DEV__, envVariables } from '../../lib/env';
-import { RedisClientType } from '../modules/redis';
+import { __DEV__, envVariables } from '../../lib/env.js';
+import { RedisClientType } from '../modules/redis.js';
 
 export const initMiddleware = (app: Express, redis: RedisClientType) => {
   const redisStore = new RedisStore({

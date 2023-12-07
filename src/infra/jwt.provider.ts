@@ -2,9 +2,9 @@ import { KeyLike, SignJWT, importPKCS8, jwtVerify } from 'jose';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { readFileSync } from 'node:fs';
 
-import { s3Client } from './modules/s3';
-import { AppError } from '../lib/AppError';
-import { __DEV__, envVariables } from '../lib/env';
+import { s3Client } from './modules/s3.js';
+import { AppError } from '../lib/AppError.js';
+import { __DEV__, envVariables } from '../lib/env.js';
 
 const ALGORITHM = 'RS256' as const;
 const FILE_NAME = 'private.pem' as const;

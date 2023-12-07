@@ -1,5 +1,5 @@
 import { Request, RequestHandler } from 'express';
-import { RedisRepository } from '../redis.repository';
+import { RedisRepository } from '../redis.repository.js';
 
 export const cacheResponse =
   (

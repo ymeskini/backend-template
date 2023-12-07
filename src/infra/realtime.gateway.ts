@@ -2,9 +2,9 @@ import { WebSocket, WebSocketServer } from 'ws';
 import z from 'zod';
 import { randomUUID } from 'node:crypto';
 
-import { RedisClientType } from './modules/redis';
-import { logger } from '../lib/logger';
-import { JWTProvider } from './jwt.provider';
+import { RedisClientType } from './modules/redis.js';
+import { logger } from '../lib/logger.js';
+import { JWTProvider } from './jwt.provider.js';
 
 const baseSchema = z.object({
   type: z

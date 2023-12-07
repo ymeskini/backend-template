@@ -1,5 +1,5 @@
 import { ConnectionOptions } from 'bullmq';
-import { envVariables } from '../../lib/env';
+import { envVariables } from '../../lib/env.js';
 
 export const sharedRedisConnection: ConnectionOptions = {
   host: envVariables.REDIS_HOST,

@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { decrypt, encrypt } from './encryption';
+import { decrypt, encrypt } from './encryption.js';
 
 describe('encryption', () => {
   const key = crypto.randomBytes(32).toString('base64');

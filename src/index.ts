@@ -4,16 +4,16 @@ import * as Sentry from '@sentry/node';
 import { WebSocketServer } from 'ws';
 import { MongoClient } from 'mongodb';
 
-import { __DEV__, envVariables } from './lib/env';
-import { initMiddleware } from './infra/middleware';
-import { logger } from './lib/logger';
-import { globalErrorHandler } from './infra/middleware/errorHandler';
-import { AppError } from './lib/AppError';
-import { RealtimeRepository } from './infra/realtime.gateway';
-import { redis } from './infra/modules/redis';
-import { authRouter } from './infra/auth.routes';
-import { healthRouter } from './infra/health.routes';
-import { JWTProvider } from './infra/jwt.provider';
+import { __DEV__, envVariables } from './lib/env.js';
+import { initMiddleware } from './infra/middleware/index.js';
+import { logger } from './lib/logger.js';
+import { globalErrorHandler } from './infra/middleware/errorHandler.js';
+import { AppError } from './lib/AppError.js';
+import { RealtimeRepository } from './infra/realtime.gateway.js';
+import { redis } from './infra/modules/redis.js';
+import { authRouter } from './infra/auth.routes.js';
+import { healthRouter } from './infra/health.routes.js';
+import { JWTProvider } from './infra/jwt.provider.js';
 
 const app = express();
 const server = http.createServer(app);
