@@ -14,15 +14,15 @@
     "node": "21"
   },
   "scripts": {
-    "build": "swc src -D -d dist",
+    "build": "swc src --copy-files --out-dir dist",
     "dev": "npm run build -- -w & node --watch-path=./dist dist/index.js",
     "lint": "eslint src",
     "start": "docker-compose up",
-    "test": "SWCRC=true node --loader @swc-node/register/esm --test src/**/*.test.ts",
-    "test:watch": "SWCRC=true node --loader @swc-node/register/esm --test --watch src/**/*.test.ts",
+    "test": "node --loader @swc-node/register/esm --test src/**/*.test.ts",
+    "test:watch": "node --loader @swc-node/register/esm --test --watch src/**/*.test.ts",
     "type": "tsc --noEmit",
     "type:watch": "tsc --watch",
-    "generate:keys": "SWCRC=true node --loader @swc-node/register/esm scripts/generatePrivateKey.ts"
+    "generate:keys": "node --loader @swc-node/register/esm scripts/generatePrivateKey.ts"
   },
   "author": "Youssef Meskini",
   "license": "ISC",

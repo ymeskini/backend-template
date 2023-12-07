@@ -17,7 +17,7 @@ primary_region = "cdg"
 
 [env]
   PORT = "3000"
-  SESSION_DOMAIN = "*"
+  SESSION_DOMAIN = "youssefmeskini.me"
 
 [http_service]
   internal_port = 3000
