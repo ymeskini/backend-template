@@ -6,9 +6,9 @@ const envSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string(),
   AWS_S3_BUCKET_NAME: z.string(),
   EMAIL_SUPPORT: z.string(),
+  ENVIRONMENT: z.string().optional(),
   JWT_SECRET: z.string(),
   MONGO_DB_URL: z.string(),
-  NODE_ENV: z.string().default('development'),
   PORT: z.string().default('4444'),
   POSTMARK_API_KEY: z.string(),
   REDIS_HOST: z.string(),
@@ -20,4 +20,4 @@ const envSchema = z.object({
 });
 
 export const envVariables = envSchema.parse(process.env);
-export const __DEV__ = envVariables.NODE_ENV === 'development';
+export const __DEV__ = envVariables.ENVIRONMENT === 'development';

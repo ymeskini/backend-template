@@ -16,7 +16,6 @@ primary_region = "cdg"
   strategy = "rolling"
 
 [env]
-  NODE_ENV = "production"
   PORT = "3000"
   SESSION_DOMAIN = "*"
 

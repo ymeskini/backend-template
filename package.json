@@ -13,7 +13,7 @@
     "node": "20"
   },
   "scripts": {
-    "build": "./node_modules/.bin/swc src -D -d dist",
+    "build": "swc src -D -d dist",
     "dev": "npm run build -- -w & node --watch-path=./dist dist/index.js",
     "lint": "eslint src",
     "start": "docker-compose up",

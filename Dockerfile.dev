@@ -8,9 +8,10 @@ COPY src /app/src
 COPY scripts/private.pem /app/
 
 RUN npm ci && npm cache clean --force
-RUN npm i @swc/core --save-dev
 RUN npm run build
+COPY /dist /app/dist
 
+ENV NODE_ENV="production"
 EXPOSE 4444
 
 CMD ["npm", "run", "dev"]
