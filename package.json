@@ -11,7 +11,7 @@
   "type": "module",
   "main": "dist/index.js",
   "engines": {
-    "node": "20"
+    "node": "21"
   },
   "scripts": {
     "build": "swc src -D -d dist",
@@ -19,6 +19,7 @@
     "lint": "eslint src",
     "start": "docker-compose up",
     "test": "SWCRC=true node --loader @swc-node/register/esm --test src/**/*.test.ts",
+    "test:watch": "SWCRC=true node --loader @swc-node/register/esm --test --watch src/**/*.test.ts",
     "type": "tsc --noEmit",
     "type:watch": "tsc --watch",
     "generate:keys": "SWCRC=true node --loader @swc-node/register/esm scripts/generatePrivateKey.ts"

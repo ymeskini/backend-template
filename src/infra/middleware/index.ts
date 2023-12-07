@@ -9,6 +9,13 @@ import RedisStore from 'connect-redis';
 import { __DEV__, envVariables } from '../../lib/env.js';
 import { RedisClientType } from '../modules/redis.js';
 
+declare module 'express-session' {
+  interface SessionData {
+    // here you can add the properties you want to the session
+  }
+}
+
+
 export const initMiddleware = (app: Express, redis: RedisClientType) => {
   const redisStore = new RedisStore({
     client: redis,

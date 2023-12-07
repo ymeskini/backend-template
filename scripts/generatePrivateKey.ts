@@ -7,8 +7,14 @@ const generateKeyPairKeys = async () => {
     modulusLength: 4096,
   });
 
-  writeFileSync(join(__dirname, 'private.pem'), await exportPKCS8(privateKey));
-  writeFileSync(join(__dirname, 'public.pem'), await exportSPKI(publicKey));
+  writeFileSync(
+    join(process.cwd(), 'scripts', 'private.pem'),
+    await exportPKCS8(privateKey),
+  );
+  writeFileSync(
+    join(process.cwd(), 'scripts', 'public.pem'),
+    await exportSPKI(publicKey),
+  );
 };
 
 generateKeyPairKeys();
